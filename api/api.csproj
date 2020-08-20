@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <AssemblyName>LiteralLifeChurch.ArchiveManagerApi</AssemblyName>
+    <RootNamespace>LiteralLifeChurch.ArchiveManagerApi</RootNamespace>
+    <PackageId>archive-manager-api</PackageId>
+    <Authors>Oliver Spryn</Authors>
+    <Company>Literal Life Church</Company>
+    <Product>Archive Manager API</Product>
+    <Copyright>Copyright © 2020</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Description>Easily manage a media archive on OneDrive and publish its contents to the world</Description>
+    <RepositoryUrl>https://github.com/literal-life-church/archive-manager-api</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Algolia, API, API Wrapper, Archive, Archive Manager, Azure, Azure Cosmos DB, Azure Functions, Microsoft, Microsoft Graph, Microsoft Graph API, Microsoft OneDrive, OneDrive, OneDrive for Business</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Algolia.Search" Version="6.8.0" />
+    <PackageReference Include="Azure.Cosmos" Version="4.0.0-preview3" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.18" />
+    <PackageReference Include="Microsoft.Graph" Version="3.10.0" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
+    <PackageReference Include="Sentry" Version="2.1.5" />
+    <PackageReference Include="Sentry.AspNetCore" Version="2.1.5" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="2.1.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+</Project>
