@@ -1,12 +1,15 @@
 using LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping;
 using LiteralLifeChurch.ArchiveManagerApi.Services;
 using LiteralLifeChurch.ArchiveManagerApi.Services.Common;
+using LiteralLifeChurch.ArchiveManagerApi.Services.Crawler;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LiteralLifeChurch.ArchiveManagerApi
@@ -30,12 +33,11 @@ namespace LiteralLifeChurch.ArchiveManagerApi
             using (LoggerService.Init(log))
             {
                 ConfigurationModel config = ConfigurationService.GetConfiguration();
-                Drive drive = await AuthenticationService.GetDriveAsync(config);
+                FileListService fileListService = new FileListService(config);
+                List<DriveItem> media = await fileListService.ListAllMediaItems();
 
-                string first = drive.Name;
-                string responseMessage = $"Drive name is: {first}";
-
-                return new OkObjectResult(responseMessage);
+                IEnumerable<string> names = media.Select(x => x.Name);
+                return new OkObjectResult(string.Join("\n", names));
             }
         }
     }
