@@ -1,7 +1,9 @@
 using LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping;
+using LiteralLifeChurch.ArchiveManagerApi.Models.Indexer;
 using LiteralLifeChurch.ArchiveManagerApi.Services;
 using LiteralLifeChurch.ArchiveManagerApi.Services.Common;
 using LiteralLifeChurch.ArchiveManagerApi.Services.Crawler;
+using LiteralLifeChurch.ArchiveManagerApi.Services.Indexer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -34,10 +36,12 @@ namespace LiteralLifeChurch.ArchiveManagerApi
             {
                 ConfigurationModel config = ConfigurationService.GetConfiguration();
                 FileListService fileListService = new FileListService(config);
+                IndexerPipelineService indexer = new IndexerPipelineService(config);
                 List<DriveItem> media = await fileListService.ListAllMediaItems();
+                List<MediaModel> transformedMedia = indexer.Transform(media);
 
-                IEnumerable<string> names = media.Select(x => x.Name);
-                return new OkObjectResult(string.Join("\n", names));
+                IEnumerable<string> dates = transformedMedia.Select(x => x.Date.DateString.Normalized + x.Date.Modifier.Symbol + " ==> " + x.Date.Stamp.ToString());
+                return new OkObjectResult(string.Join("\n", dates));
             }
         }
     }

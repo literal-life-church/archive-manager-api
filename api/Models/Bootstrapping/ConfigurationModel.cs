@@ -6,6 +6,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping
     {
         public string ClientId { get; set; }
 
+        public FaultResponseType FaultResponse { get; set; }
+
         public string FolderFullService { get; set; }
 
         public string FolderFullServiceAudio { get; set; }
@@ -19,5 +21,14 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping
         public string TenantId { get; set; }
 
         public string Username { get; set; }
+
+        public int ValidYearLowerBound { get; set; }
+
+        public enum FaultResponseType
+        {
+            Default,
+            Skip,
+            Terminate
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Common
             return SentrySdk.Init();
         }
 
-        public static void CaptureException(Exception e)
+        public static void CaptureException(System.Exception e)
         {
             SentrySdk.CaptureException(e);
             Logger.LogCritical(e.Message);

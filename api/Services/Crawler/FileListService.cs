@@ -1,7 +1,6 @@
 ﻿using LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping;
 using LiteralLifeChurch.ArchiveManagerApi.Services.Common;
 using Microsoft.Graph;
-using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,9 +141,13 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Crawler
 
             try
             {
+                int lowerYear = Config.ValidYearLowerBound;
+                int upperYear = DateTime.Today.Year;
+                
                 string folderName = item.Name.Trim().ToLowerInvariant();
                 int mappedYear = Convert.ToInt32(folderName);
-                return 1000 <= mappedYear && mappedYear <= 9999;
+                return mappedYear == 2020; // TODO revert
+                // return lowerYear <= mappedYear && mappedYear <= upperYear;
             }
             catch (Exception)
             {
