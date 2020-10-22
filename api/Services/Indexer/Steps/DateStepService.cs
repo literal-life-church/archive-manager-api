@@ -75,7 +75,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer.Steps
 
             return new DateModel
             {
-                AssumedDate = Error != ErrorType.None,
+                AssumedValue = Error != ErrorType.None,
                 DateString = dateString,
                 Id = GenerateId(dateString.Normalized),
                 Modifier = modifier,

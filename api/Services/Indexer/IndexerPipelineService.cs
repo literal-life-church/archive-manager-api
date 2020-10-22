@@ -12,11 +12,13 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer
     {
         private readonly ConfigurationModel Config;
         private readonly DateStepService DateStepService;
+        private readonly SpeakerStepService SpeakerStepService;
 
         public IndexerPipelineService(ConfigurationModel config)
         {
             Config = config;
             DateStepService = new DateStepService(config);
+            SpeakerStepService = new SpeakerStepService(config);
         }
 
         public List<MediaModel> Transform(List<DriveItem> driveItems)
@@ -29,7 +31,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer
                 {
                     models.Add(new MediaModel
                     {
-                        Date = DateStepService.Transform(item, "-", 0)
+                        Date = DateStepService.Transform(item, "-", 0),
+                        Speakers = SpeakerStepService.Transform(item, "-", 1)
                     });
                 }
                 catch (AppException ex)

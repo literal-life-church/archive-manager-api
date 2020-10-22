@@ -40,7 +40,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi
                 List<DriveItem> media = await fileListService.ListAllMediaItems();
                 List<MediaModel> transformedMedia = indexer.Transform(media);
 
-                IEnumerable<string> dates = transformedMedia.Select(x => x.Date.DateString.Normalized + x.Date.Modifier.Symbol + " ==> " + x.Date.Stamp.ToString());
+                IEnumerable<string> dates = transformedMedia.Select(x => x.Speakers.Names[0].Normalized + ", " + x.Date.DateString.Normalized + x.Date.Modifier.Symbol + " ==> " + x.Date.Stamp.ToString());
                 return new OkObjectResult(string.Join("\n", dates));
             }
         }

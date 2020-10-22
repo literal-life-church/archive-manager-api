@@ -124,9 +124,13 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Crawler
                 return false;
             }
 
-            string[] monthNames = new string[] {
+            /*string[] monthNames = new string[] {
                 "january", "february", "march", "april", "may", "june", "july",
                 "august", "september", "october", "november", "december"
+            };*/
+
+            string[] monthNames = new string[] {
+                "january"
             };
 
             return monthNames.Contains(parts[1].Trim());

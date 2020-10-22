@@ -5,11 +5,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.Indexer
 {
     public class DateModel : IndexerModel<ErrorType>
     {
-        public bool AssumedDate { get; set; }
-
         public DateStringModel DateString { get; set; }
-
-        public string Id { get; set; }
 
         public ModifierModel Modifier { get; set; }
 
