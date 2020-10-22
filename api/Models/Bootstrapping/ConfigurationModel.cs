@@ -1,20 +1,15 @@
-﻿using System.Security;
+﻿using System.Collections.Generic;
+using System.Security;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping
 {
     public class ConfigurationModel : IBootstrappingModel
     {
+        public List<string> CategoryList { get; set; }
+
         public string ClientId { get; set; }
 
         public FaultResponseType FaultResponse { get; set; }
-
-        public string FolderFullService { get; set; }
-
-        public string FolderFullServiceAudio { get; set; }
-
-        public string FolderPreaching { get; set; }
-
-        public string FolderSpecials { get; set; }
 
         public SecureString Password { get; set; }
 

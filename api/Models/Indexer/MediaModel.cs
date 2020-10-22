@@ -7,5 +7,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.Indexer
         public DateModel Date { get; set; }
 
         public SpeakerModel Speakers { get; set; }
+
+        public MediaTypeModel Type { get; set; }
     }
 }

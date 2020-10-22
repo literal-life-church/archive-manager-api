@@ -88,11 +88,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Crawler
                 return false;
             }
 
-            string folderName = item.Name.Trim().ToLowerInvariant();
-            return folderName == Config.FolderFullService ||
-                folderName == Config.FolderFullServiceAudio ||
-                folderName == Config.FolderPreaching ||
-                folderName == Config.FolderSpecials;
+            string folderName = item.Name.Trim();
+            return Config.CategoryList.Contains(folderName);
         }
 
         private bool ShouldProcessMonth(DriveItem item)
