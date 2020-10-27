@@ -28,7 +28,6 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer.Steps
     // 200901AM - Brother John Smith; Jane Doe - Overcoming the World.mp4
     //                    ^^^^^^^^^^  ^^^^^^^^
 
-
     public class SpeakerStepService : IndexerStepService<ErrorType, IndexerSpeakerException, SpeakerModel>
     {
         private readonly string DefaultName;
@@ -64,7 +63,6 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer.Steps
         public override SpeakerModel Transform(DriveItem item, string split, int index)
         {
             Error = ErrorType.None;
-
             string namesOnly = item.Name.Split(split).ElementAtOrDefault(index).Trim();
 
             if (string.IsNullOrWhiteSpace(namesOnly))
@@ -73,8 +71,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer.Steps
 
                 return ErrorHandler
                     .SetExceptionType(new NoNamesException())
-                    .SetDeveloperMessage("The given name segement is completely empty.")
-                    .SetPublicMessage("The given name segement is completely empty.")
+                    .SetDeveloperMessage("The given speaker name segement is completely empty.")
+                    .SetPublicMessage("The given speaker name segement is completely empty.")
                     .ThrowIfAllowed()
                     .OrDefault(DefaultSpeakerModel);
             }
@@ -126,8 +124,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer.Steps
 
                     return ErrorHandler
                         .SetExceptionType(new EmptyNameException())
-                        .SetDeveloperMessage($"The given name segement '{names}' contains an empty name.")
-                        .SetPublicMessage($"The '{names}' segement includes an empty name.")
+                        .SetDeveloperMessage($"The given speaker name segement '{names}' contains an empty name.")
+                        .SetPublicMessage($"The '{names}' in the speaker name segement includes an empty name.")
                         .ThrowIfAllowed()
                         .OrDefault(DefaultNames);
                 }
@@ -153,8 +151,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer.Steps
 
                 return ErrorHandler
                     .SetExceptionType(new EmptyNormalizedNameException())
-                    .SetDeveloperMessage("Whenever normalizing one of the given name segements, it resulted in an empty value.")
-                    .SetPublicMessage("The media file name segement includes an empty name.")
+                    .SetDeveloperMessage("Whenever normalizing one of the given speaker name segements, it resulted in an empty value.")
+                    .SetPublicMessage("The given speaker name segement includes an empty name.")
                     .ThrowIfAllowed()
                     .OrDefault(DefaultName);
             }
