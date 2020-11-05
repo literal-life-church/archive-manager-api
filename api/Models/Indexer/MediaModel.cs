@@ -8,6 +8,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.Indexer
 
         public NameModel Name { get; set; }
 
+        public OneDriveMetadataModel OneDriveMetadata { get; set; }
+
         public SpeakerModel Speakers { get; set; }
 
         public MediaTypeModel Type { get; set; }

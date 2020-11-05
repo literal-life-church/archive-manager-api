@@ -14,6 +14,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer
         private readonly DateStepService DateStepService;
         private readonly MediaTypeStepService MediaTypeStepService;
         private readonly NameStepService NameStepService;
+        private readonly OneDriveMetadataStepService OneDriveMetadataStepService;
         private readonly SpeakerStepService SpeakerStepService;
 
         public IndexerPipelineService(ConfigurationModel config)
@@ -22,6 +23,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer
             DateStepService = new DateStepService(config);
             MediaTypeStepService = new MediaTypeStepService(config);
             NameStepService = new NameStepService(config);
+            OneDriveMetadataStepService = new OneDriveMetadataStepService(config);
             SpeakerStepService = new SpeakerStepService(config);
         }
 
@@ -37,6 +39,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Indexer
                     {
                         Date = DateStepService.Transform(item, " - ", 0),
                         Name = NameStepService.Transform(item, " - ", 2),
+                        OneDriveMetadata = OneDriveMetadataStepService.Transform(item, "", 0),
                         Speakers = SpeakerStepService.Transform(item, " - ", 1),
                         Type = MediaTypeStepService.Transform(item, "", 0)
                     });
