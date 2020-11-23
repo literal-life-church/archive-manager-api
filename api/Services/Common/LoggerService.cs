@@ -10,7 +10,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.Common
         // region Categories
 
         public static readonly string Bootstrapping = "bootstrapping";
-        public static readonly string Crawler = "crawler";
+        public static readonly string Crawl = "crawl";
 
         // endregion
 

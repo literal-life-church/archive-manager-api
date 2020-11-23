@@ -1,15 +1,13 @@
 using LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping;
-using LiteralLifeChurch.ArchiveManagerApi.Models.Indexer;
+using LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow;
 using LiteralLifeChurch.ArchiveManagerApi.Services;
 using LiteralLifeChurch.ArchiveManagerApi.Services.Common;
-using LiteralLifeChurch.ArchiveManagerApi.Services.Crawler;
-using LiteralLifeChurch.ArchiveManagerApi.Services.Indexer;
+using LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graph;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,12 +33,11 @@ namespace LiteralLifeChurch.ArchiveManagerApi
             using (LoggerService.Init(log))
             {
                 ConfigurationModel config = ConfigurationService.GetConfiguration();
-                FileListService fileListService = new FileListService(config);
-                IndexerPipelineService indexer = new IndexerPipelineService(config);
-                List<DriveItem> media = await fileListService.ListAllMediaItems();
-                List<MediaModel> transformedMedia = indexer.Transform(media);
+                IndexerWorkflowPipeline indexer = new IndexerWorkflowPipeline(config);
+                List<MediaModel> transformedMedia = await indexer.Run();
 
-                IEnumerable<string> dates = transformedMedia.Select(x => {
+                IEnumerable<string> dates = transformedMedia.Select(x =>
+                {
                     return "Sermon Name: " + x.Name.Normalized + "\n" +
                     "Speakers: " + string.Join(", ", x.Speakers.Names.Select(y => y.Normalized)) + "\n" +
                     "Date: " + x.Date.DateString.Normalized + x.Date.Modifier.Symbol + " (" + x.Date.Stamp.ToString() + ")\n" +
