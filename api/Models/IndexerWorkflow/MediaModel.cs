@@ -10,6 +10,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow
 
         public OneDriveMetadataModel OneDriveMetadata { get; set; }
 
+        public SeriesModel Series { get; set; }
+
         public SpeakerModel Speakers { get; set; }
 
         public MediaTypeModel Type { get; set; }

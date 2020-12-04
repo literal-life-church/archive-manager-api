@@ -122,10 +122,10 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Cra
             /*string[] monthNames = new string[] {
                 "january", "february", "march", "april", "may", "june", "july",
                 "august", "september", "october", "november", "december"
-            };*/ // TODO revert
+            };*/
 
             string[] monthNames = new string[] {
-                "january"
+                "january", "february"
             };
 
             return monthNames.Contains(parts[1].Trim());
@@ -145,7 +145,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Cra
                 
                 string folderName = item.Name.Trim().ToLowerInvariant();
                 int mappedYear = Convert.ToInt32(folderName);
-                return mappedYear == 2020; // TODO revert
+                return mappedYear == 2017; // TODO revert
                 // return lowerYear <= mappedYear && mappedYear <= upperYear;
             }
             catch (Exception)

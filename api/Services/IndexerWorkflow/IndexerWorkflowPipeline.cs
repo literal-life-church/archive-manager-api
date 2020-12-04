@@ -18,16 +18,22 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow
         private readonly MediaTypeStep MediaType;
         private readonly NameStep Name;
         private readonly OneDriveMetadataStep OneDriveMetadata;
+        private readonly SeriesStep Series;
         private readonly SpeakerStep Speaker;
+
+        private Dictionary<string, int> SeriesNames;
 
         public IndexerWorkflowPipeline(ConfigurationModel config)
         {
+            SeriesNames = new Dictionary<string, int>();
+
             Config = config;
             Crawl = new CrawlStep(config);
             Date = new DateStep(config, " - ", 0);
             MediaType = new MediaTypeStep(config);
             Name = new NameStep(config, " - ", 2);
             OneDriveMetadata = new OneDriveMetadataStep(config);
+            Series = new SeriesStep(config, " - ", 3, SeriesNames);
             Speaker = new SpeakerStep(config, " - ", 1);
         }
 
@@ -35,6 +41,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow
         {
             List<DriveItem> driveItems = await Crawl.Run(null);
             List<MediaModel> models = new List<MediaModel>();
+            
 
             foreach (DriveItem item in driveItems)
             {
@@ -45,6 +52,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow
                         Date = Date.Run(item),
                         Name = Name.Run(item),
                         OneDriveMetadata = OneDriveMetadata.Run(item),
+                        Series = Series.Run(item),
                         Speakers = Speaker.Run(item),
                         Type = MediaType.Run(item)
                     });

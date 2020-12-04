@@ -39,7 +39,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
         public override NameModel Run(DriveItem item)
         {
             Error = ErrorType.None;
-            string givenName = RemoveExtension(item.Name.Split(Split).ElementAtOrDefault(Index).Trim());
+            string givenName = RemoveExtension(item.Name.Split(Split).ElementAtOrDefault(Index));
 
             if (string.IsNullOrWhiteSpace(givenName))
             {
@@ -52,6 +52,8 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
                     .ThrowIfAllowed()
                     .OrDefault(DefaultNameModel);
             }
+
+            givenName = givenName.Trim();
 
             TextInfo textinfo = new CultureInfo("en-US", false).TextInfo;
             string normalizedName = textinfo.ToTitleCase(givenName);
