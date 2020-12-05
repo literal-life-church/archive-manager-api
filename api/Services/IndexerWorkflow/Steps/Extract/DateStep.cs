@@ -78,11 +78,22 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
             ModifierModel modifier = ExtractModifier(dateOnly);
             DateTime date = ExtractDateTime(dateString.Normalized, modifier.Type);
 
+            string fullDate;
+
+            if (modifier.Type == ModifierType.None)
+            {
+                fullDate = dateString.Normalized;
+            }
+            else
+            {
+                fullDate = $"{dateString.Normalized}{modifier.Symbol}";
+            }
+
             return new DateModel
             {
                 AssumedValue = Error != ErrorType.None,
                 DateString = dateString,
-                Id = GenerateId(dateString.Normalized),
+                Id = GenerateId(fullDate),
                 Modifier = modifier,
                 ParseError = Error,
                 Stamp = date
