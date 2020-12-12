@@ -28,7 +28,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
     // 200901AM - Brother John Smith; Jane Doe - Overcoming the World.mp4
     //                    ^^^^^^^^^^  ^^^^^^^^
 
-    public class SpeakerStep : IndexerWorkflowStep<DriveItem, SpeakerModel, SpeakerException>
+    public class SpeakerExtractStep : IndexerWorkflowStep<DriveItem, SpeakerModel, SpeakerException>
     {
         private readonly string DefaultName;
         private readonly List<string> DefaultNames;
@@ -38,7 +38,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
         private readonly int Index;
         private readonly string Split;
 
-        public SpeakerStep(ConfigurationModel config, string split, int index) : base(config)
+        public SpeakerExtractStep(ConfigurationModel config, string split, int index) : base(config)
         {
             Index = index;
             Split = split;

@@ -11,7 +11,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
     // Extract something like: 200901AM - John Smith - Overcoming the World.mp4
     //                                                 ^^^^^^^^^^^^^^^^^^^^
 
-    public class NameStep : IndexerWorkflowStep<DriveItem, NameModel, NameException>
+    public class NameExtractStep : IndexerWorkflowStep<DriveItem, NameModel, NameException>
     {
         private readonly NameModel DefaultNameModel;
 
@@ -19,7 +19,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
         private readonly int Index;
         private readonly string Split;
 
-        public NameStep(ConfigurationModel config, string split, int index) : base(config)
+        public NameExtractStep(ConfigurationModel config, string split, int index) : base(config)
         {
             Index = index;
             Split = split;

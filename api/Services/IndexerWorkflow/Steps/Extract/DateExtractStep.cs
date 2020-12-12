@@ -1,5 +1,6 @@
 ﻿using LiteralLifeChurch.ArchiveManagerApi.Exceptions.IndexerWorkflow.Extract.Date;
 using LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping;
+using LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow;
 using LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract;
 using Microsoft.Graph;
 using System;
@@ -7,7 +8,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using static LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract.DateModel;
-using static LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract.DateModel.ModifierModel;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Extract
 {
@@ -25,7 +25,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
     // 200901M - John Smith - Overcoming the World.mp4
     // ^^^^^^^
 
-    public class DateStep : IndexerWorkflowStep<DriveItem, DateModel, DateException>
+    public class DateExtractStep : IndexerWorkflowStep<DriveItem, DateModel, DateException>
     {
         private const string DateFormat = "yyMMdd";
         private readonly DateTime ValidDateLowerBound;
@@ -45,7 +45,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
         private readonly int Index;
         private readonly string Split;
 
-        public DateStep(ConfigurationModel config, string split, int index) : base(config)
+        public DateExtractStep(ConfigurationModel config, string split, int index) : base(config)
         {
             Index = index;
             Split = split;
@@ -65,7 +65,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
             DefaultModifierModel = new ModifierModel
             {
                 Symbol = "",
-                Type = ModifierType.None
+                Type = DateModifierType.None
             };
         }
 
@@ -80,7 +80,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
 
             string fullDate;
 
-            if (modifier.Type == ModifierType.None)
+            if (modifier.Type == DateModifierType.None)
             {
                 fullDate = dateString.Normalized;
             }
@@ -135,7 +135,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
                 .OrDefault(DefaultDateStringModel);
         }
 
-        private DateTime ExtractDateTime(string dateString, ModifierType modifierType)
+        private DateTime ExtractDateTime(string dateString, DateModifierType modifierType)
         {
             if (!DateTime.TryParseExact(dateString, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
             {
@@ -151,23 +151,23 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
 
             switch (modifierType)
             {
-                case ModifierType.Afternoon:
+                case DateModifierType.Afternoon:
                     parsedDate = parsedDate.AddHours(modifierHoursAfternoon);
                     break;
 
-                case ModifierType.Breakfast:
+                case DateModifierType.Breakfast:
                     parsedDate = parsedDate.AddHours(modifierHoursBreakfast);
                     break;
 
-                case ModifierType.Evening:
+                case DateModifierType.Evening:
                     parsedDate = parsedDate.AddHours(modifierHoursEvening);
                     break;
 
-                case ModifierType.Morning:
+                case DateModifierType.Morning:
                     parsedDate = parsedDate.AddHours(modifierHoursMorning);
                     break;
 
-                case ModifierType.Sunrise:
+                case DateModifierType.Sunrise:
                     parsedDate = parsedDate.AddHours(modifierHoursSunrise);
                     break;
             }
@@ -198,34 +198,34 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
             else if (modifierPart.Length == 1 || modifierPart.Length == 2)
             {
                 string symbol = modifierPart.ToUpperInvariant();
-                ModifierType type;
+                DateModifierType type;
 
                 switch (symbol)
                 {
                     case "A":
-                        type = ModifierType.Afternoon;
+                        type = DateModifierType.Afternoon;
                         break;
 
                     case "B":
-                        type = ModifierType.Breakfast;
+                        type = DateModifierType.Breakfast;
                         break;
 
                     case "E":
                     case "PM":
-                        type = ModifierType.Evening;
+                        type = DateModifierType.Evening;
                         break;
 
                     case "AM":
                     case "M":
-                        type = ModifierType.Morning;
+                        type = DateModifierType.Morning;
                         break;
 
                     case "S":
-                        type = ModifierType.Sunrise;
+                        type = DateModifierType.Sunrise;
                         break;
 
                     case "X":
-                        type = ModifierType.Miscellaneous;
+                        type = DateModifierType.Miscellaneous;
                         break;
 
                     default:

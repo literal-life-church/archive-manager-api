@@ -34,14 +34,14 @@ namespace LiteralLifeChurch.ArchiveManagerApi
             {
                 ConfigurationModel config = ConfigurationService.GetConfiguration();
                 IndexerWorkflowPipeline indexer = new IndexerWorkflowPipeline(config);
-                List<MediaModel> transformedMedia = await indexer.Run();
+                List<ReducedMediaModel> transformedMedia = await indexer.Run();
 
                 IEnumerable<string> dates = transformedMedia.Select(x =>
                 {
-                    return "Sermon Name: " + x.Name.Normalized + "\n" +
-                    "Speakers: " + string.Join(", ", x.Speakers.Names.Select(y => y.Normalized)) + "\n" +
-                    "Date: " + x.Date.DateString.Normalized + x.Date.Modifier.Symbol + " (" + x.Date.Stamp.ToString() + ")\n" +
-                    "Type: " + x.Type.Name + "\n";
+                    return "Sermon Name: " + x.Name + "\n" +
+                    "Speakers: " + string.Join(", ", x.Speakers) + "\n" +
+                    "Date: " + x.Date + " (" + x.DateModifier.ToString() + ")\n" +
+                    "Type: " + x.MediaType + "\n";
                 });
 
                 return new OkObjectResult(string.Join("\n", dates));

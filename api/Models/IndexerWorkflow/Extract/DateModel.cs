@@ -30,20 +30,9 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract
 
         public class ModifierModel
         {
-            public ModifierType Type { get; set; }
+            public DateModifierType Type { get; set; }
 
             public string Symbol { get; set; }
-
-            public enum ModifierType
-            {
-                Afternoon,
-                Breakfast,
-                Evening,
-                Miscellaneous,
-                Morning,
-                None,
-                Sunrise
-            }
         }
     }
 }

@@ -6,11 +6,11 @@ using static LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract.
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Extract
 {
-    public class OneDriveMetadataStep : IndexerWorkflowStep<DriveItem, OneDriveMetadataModel, OneDriveMetadataException>
+    public class OneDriveMetadataExtractStep : IndexerWorkflowStep<DriveItem, OneDriveMetadataModel, OneDriveMetadataException>
     {
         private bool AssumedValue = false;
 
-        public OneDriveMetadataStep(ConfigurationModel config) : base(config)
+        public OneDriveMetadataExtractStep(ConfigurationModel config) : base(config)
         {
         }
 

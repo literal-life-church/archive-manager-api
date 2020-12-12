@@ -7,9 +7,15 @@ using static LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract.
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Extract
 {
-    public class MediaTypeStep : IndexerWorkflowStep<DriveItem, MediaTypeModel, MediaTypeException>
+    // Extract something like: Full Service/200901AM - John Smith - Overcoming the World.mp4
+    //                         ^^^^^^^^^^^^
+    // or
+    // Full Service - MP3/200901AM - John Smith - Overcoming the World.mp4
+    // ^^^^^^^^^^^^^^^^^^
+
+    public class MediaTypeExtractStep : IndexerWorkflowStep<DriveItem, MediaTypeModel, MediaTypeException>
     {
-        public MediaTypeStep(ConfigurationModel config) : base(config)
+        public MediaTypeExtractStep(ConfigurationModel config) : base(config)
         {
         }
 

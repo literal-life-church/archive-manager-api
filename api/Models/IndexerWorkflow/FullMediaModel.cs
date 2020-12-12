@@ -2,7 +2,7 @@
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow
 {
-    public class MediaModel : IIndexerWorkflowModel
+    public class FullMediaModel : IIndexerWorkflowModel
     {
         public DateModel Date { get; set; }
 
