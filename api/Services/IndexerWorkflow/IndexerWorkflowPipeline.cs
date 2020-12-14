@@ -5,6 +5,7 @@ using LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Crawl;
 using LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Extract;
 using Microsoft.Graph;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping.ConfigurationModel;
 
@@ -39,9 +40,25 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow
 
         public async Task<List<MediaModel>> Run()
         {
-            List<DriveItem> driveItems = await Crawl.Run(null);
+            List<DriveItem> driveItems = await RunCrawl();
+
+            return driveItems
+                .Select(items => RunExtract(driveItems))
+                .Select(rawExtract => RunSortByDate(rawExtract))
+                .Select(sortedRawExtract => RunExtractSeries(sortedRawExtract))
+                .FirstOrDefault();
+        }
+
+        // region Helper Methods
+
+        private async Task<List<DriveItem>> RunCrawl()
+        {
+            return await Crawl.Run(null);
+        }
+
+        private List<MediaModel> RunExtract(List<DriveItem> driveItems)
+        {
             List<MediaModel> models = new List<MediaModel>();
-            
 
             foreach (DriveItem item in driveItems)
             {
@@ -52,7 +69,6 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow
                         Date = Date.Run(item),
                         Name = Name.Run(item),
                         OneDriveMetadata = OneDriveMetadata.Run(item),
-                        Series = Series.Run(item),
                         Speakers = Speaker.Run(item),
                         Type = MediaType.Run(item)
                     });
@@ -68,5 +84,32 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow
 
             return models;
         }
+
+        private List<MediaModel> RunExtractSeries(List<MediaModel> sortedRawExtract)
+        {
+            foreach(MediaModel item in sortedRawExtract)
+            {
+                try
+                {
+                    item.Series = Series.Run(item);
+                }
+                catch (AppException ex)
+                {
+                    if (Config.FaultResponse == FaultResponseType.Terminate)
+                    {
+                        throw ex;
+                    }
+                }
+            }
+
+            return sortedRawExtract;
+        }
+
+        private List<MediaModel> RunSortByDate(List<MediaModel> rawExtract)
+        {
+            return rawExtract.OrderBy(model => model.Date.Stamp).ToList();
+        }
+
+        // endregion
     }
 }

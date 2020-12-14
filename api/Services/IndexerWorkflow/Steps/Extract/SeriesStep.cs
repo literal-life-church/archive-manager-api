@@ -1,5 +1,6 @@
 ﻿using LiteralLifeChurch.ArchiveManagerApi.Exceptions.IndexerWorkflow.Extract.Series;
 using LiteralLifeChurch.ArchiveManagerApi.Models.Bootstrapping;
+using LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow;
 using LiteralLifeChurch.ArchiveManagerApi.Models.IndexerWorkflow.Extract;
 using Microsoft.Graph;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
     // Extract something like: 200901AM - John Smith - Overcoming the World - Greater Is He That Is In You.mp4
     //                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    public class SeriesStep : IndexerWorkflowStep<DriveItem, SeriesModel, SeriesException>
+    public class SeriesStep : IndexerWorkflowStep<MediaModel, SeriesModel, SeriesException>
     {
         private readonly SeriesModel DefaultSeries;
 
@@ -39,9 +40,9 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Services.IndexerWorkflow.Steps.Ext
             };
         }
 
-        public override SeriesModel Run(DriveItem item)
+        public override SeriesModel Run(MediaModel item)
         {
-            string givenName = item.Name.Split(Split).ElementAtOrDefault(Index);
+            string givenName = item.OneDriveMetadata.Name.Split(Split).ElementAtOrDefault(Index);
 
             if (string.IsNullOrWhiteSpace(givenName))
             {
