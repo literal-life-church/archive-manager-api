@@ -2,18 +2,18 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
-    <PackageId>LiteralLifeChurch.ArchiveManager</PackageId>
-    <Title>Archive Manager</Title>
+    <PackageId>LiteralLifeChurch.ArchiveManagerApi</PackageId>
+    <Title>Archive Manager API</Title>
     <Version>0.2.0</Version>
     <Authors>Oliver Spryn</Authors>
     <Company>Literal Life Church</Company>
-    <Product>Archive Manager</Product>
-    <RootNamespace>LiteralLifeChurch.ArchiveManager</RootNamespace>
-    <AssemblyName>archive-manager</AssemblyName>
+    <Product>Archive Manager API</Product>
+    <RootNamespace>LiteralLifeChurch.ArchiveManagerApi</RootNamespace>
+    <AssemblyName>archive-manager-api</AssemblyName>
     <Description>Easily manage a media archive on OneDrive and publish its contents to the world.</Description>
     <Copyright>Copyright © 2023</Copyright>
-    <PackageProjectUrl>https://github.com/literal-life-church/archive-manager</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/literal-life-church/archive-manager</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/literal-life-church/archive-manager-api</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/literal-life-church/archive-manager-api</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Microsoft;Serverless;Azure;OneDrive;Azure Functions;Microsoft Graph API;Microsoft Graph;OneDrive for Business</PackageTags>
   </PropertyGroup>
