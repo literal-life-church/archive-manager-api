@@ -18,6 +18,8 @@
     <PackageTags>Microsoft;Serverless;Azure;OneDrive;Azure Functions;Microsoft Graph API;Microsoft Graph;OneDrive for Business</PackageTags>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.8.2" />
+    <PackageReference Include="Microsoft.Graph" Version="5.9.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
