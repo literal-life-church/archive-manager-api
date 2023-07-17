@@ -13,10 +13,10 @@ namespace LiteralLifeChurch.ArchiveManagerApi
 {
     public static class IndexMedia
     {
-        private const string ClientId = "FAKE";
-        private const string TenantId = "FAKE";
-        private const string Username = "FAKE";
-        private const string Password = "FAKE";
+        private static readonly string ClientId = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_CLIENT_ID");
+        private static readonly string TenantId = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_TENANT_ID");
+        private static readonly string Username = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_SERVICE_ACCOUNT_USERNAME");
+        private static readonly string Password = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_SERVICE_ACCOUNT_PASSWORD");
 
         private static readonly string[] Scopes = { "Files.Read.All" };
 
