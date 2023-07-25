@@ -1,17 +1,20 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
-using System;
-using System.Text;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace LiteralLifeChurch.ArchiveManagerApi
 {
-    public static class IndexMedia
+    public static class IndexAll
     {
         private static readonly string ClientId = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_CLIENT_ID");
         private static readonly string TenantId = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_TENANT_ID");
@@ -20,11 +23,18 @@ namespace LiteralLifeChurch.ArchiveManagerApi
 
         private static readonly string[] Scopes = { "Files.Read.All" };
 
-        [FunctionName("IndexMedia")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]
-            HttpRequest req,
-            ILogger log)
+        [FunctionName("IndexAll")]
+        public static async Task<List<string>> RunOrchestrator(
+            [OrchestrationTrigger] IDurableOrchestrationContext context)
+        {
+            return new()
+            {
+                await context.CallActivityAsync<string>(nameof(SayHello), "Tokyo")
+            };
+        }
+
+        [FunctionName(nameof(SayHello))]
+        public static async Task<string> SayHello([ActivityTrigger] string name, ILogger log)
         {
             // See: https://learn.microsoft.com/en-us/graph/sdks/choose-authentication-providers?tabs=CS#usernamepassword-provider
             var options = new TokenCredentialOptions
@@ -65,7 +75,19 @@ namespace LiteralLifeChurch.ArchiveManagerApi
                 stringBuilder.AppendLine("");
             }
 
-            return new OkObjectResult(stringBuilder.ToString());
+            return stringBuilder.ToString();
+        }
+
+        [FunctionName("IndexAll_Start")]
+        public static async Task<HttpResponseMessage> HttpStart(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "management/index")] HttpRequestMessage req,
+            [DurableClient] IDurableOrchestrationClient starter,
+            ILogger log)
+        {
+            string instanceId = await starter.StartNewAsync("IndexAll");
+            log.LogInformation("Started orchestration with ID = '{instanceId}'.", instanceId);
+
+            return starter.CreateCheckStatusResponse(req, instanceId);
         }
     }
 }
