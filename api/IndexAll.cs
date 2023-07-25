@@ -16,6 +16,11 @@ namespace LiteralLifeChurch.ArchiveManagerApi
 {
     public static class IndexAll
     {
+        // https://gregorsuttie.com/2021/08/05/how-to-set-environment-variables-for-use-with-an-azure-function/
+        // https://damienaicheh.github.io/azure/azure-functions/dotnet/2022/05/10/use-settings-json-azure-function-en.html
+        // https://damienbod.com/2020/07/12/azure-functions-configuration-and-secrets-management/
+        // https://learn.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection#customizing-configuration-sources
+        // https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-overview?tabs=csharp-inproc
         private static readonly string ClientId = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_CLIENT_ID");
         private static readonly string TenantId = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_TENANT_ID");
         private static readonly string Username = Environment.GetEnvironmentVariable("ARCHIVE_MANAGER_API_SERVICE_ACCOUNT_USERNAME");
