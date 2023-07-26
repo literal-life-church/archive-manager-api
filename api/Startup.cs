@@ -1,4 +1,5 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Data.DataSource;
+﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,15 @@ namespace LiteralLifeChurch.ArchiveManagerApi
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddSingleton<IAuthenticationEnvironmentVariableDataSource, AuthenticationEnvironmentVariableDataSource>();
+            builder
+                .Services
+                .AddOptions<AuthenticationEnvironmentVariableDomainModel>()
+                .Configure<IConfiguration>((settings, configuration) =>
+                {
+                    configuration.GetSection("ArchiveManagerApi").Bind(settings);
+                });
+
+            builder.Services.AddAuthentication();
         }
     }
 }
