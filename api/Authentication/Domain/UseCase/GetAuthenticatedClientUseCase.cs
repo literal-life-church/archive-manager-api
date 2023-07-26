@@ -1,34 +1,42 @@
-﻿using Azure.Identity;
-using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
+﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 
-namespace LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.UseCase
+namespace LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.UseCase;
+
+internal class GetAuthenticatedClientUseCase : IGetAuthenticatedClientUseCase
 {
-    internal class GetAuthenticatedClientUseCase : IGetAuthenticatedClientUseCase
+    private readonly AuthenticationEnvironmentVariableDomainModel _authenticationEnvironmentVariableDomainModel;
+    private readonly IGraphServiceClientFactory _graphServiceClientFactory;
+    private readonly ITokenCredentialOptionsFactory _tokenCredentialOptionsFactory;
+    private readonly IUsernamePasswordCredentialFactory _usernamePasswordCredentialFactory;
+
+    public GetAuthenticatedClientUseCase(
+        IOptions<AuthenticationEnvironmentVariableDomainModel> authenticationEnvironmentVariableDomainModel,
+        IGraphServiceClientFactory graphServiceClientFactory,
+        ITokenCredentialOptionsFactory tokenCredentialOptionsFactory,
+        IUsernamePasswordCredentialFactory usernamePasswordCredentialFactory)
     {
-        private readonly AuthenticationEnvironmentVariableDomainModel _authenticationEnvironmentVariableDomainModel;
+        _authenticationEnvironmentVariableDomainModel = authenticationEnvironmentVariableDomainModel.Value;
+        _graphServiceClientFactory = graphServiceClientFactory;
+        _tokenCredentialOptionsFactory = tokenCredentialOptionsFactory;
+        _usernamePasswordCredentialFactory = usernamePasswordCredentialFactory;
+    }
 
-        public GetAuthenticatedClientUseCase(IOptions<AuthenticationEnvironmentVariableDomainModel> authenticationEnvironmentVariableDomainModel)
-        {
-            _authenticationEnvironmentVariableDomainModel = authenticationEnvironmentVariableDomainModel.Value;
-        }
+    public GraphServiceClient Execute()
+    {
+        var options = _tokenCredentialOptionsFactory.NewInstance();
+        options.AuthorityHost = AuthenticationConfig.AuthorityHost;
 
-        public GraphServiceClient Execute()
-        {
-            var options = new TokenCredentialOptions
-            {
-                AuthorityHost = AuthenticationConfig.AuthorityHost
-            };
+        var clientId = _authenticationEnvironmentVariableDomainModel.ClientId;
+        var password = _authenticationEnvironmentVariableDomainModel.ServiceAccountPassword;
+        var tenantId = _authenticationEnvironmentVariableDomainModel.TenantId;
+        var username = _authenticationEnvironmentVariableDomainModel.ServiceAccountUsername;
 
-            string username = _authenticationEnvironmentVariableDomainModel.ServiceAccountUsername;
-            string password = _authenticationEnvironmentVariableDomainModel.ServiceAccountPassword;
-            string tenantId = _authenticationEnvironmentVariableDomainModel.TenantId;
-            string clientId = _authenticationEnvironmentVariableDomainModel.ClientId;
+        var credential =
+            _usernamePasswordCredentialFactory.NewInstance(username, password, tenantId, clientId, options);
 
-            var credential = new UsernamePasswordCredential(username, password, tenantId, clientId, options);
-            var graphClient = new GraphServiceClient(credential, AuthenticationConfig.Scopes);
-            return graphClient;
-        }
+        return _graphServiceClientFactory.NewInstance(credential, AuthenticationConfig.Scopes);
     }
 }

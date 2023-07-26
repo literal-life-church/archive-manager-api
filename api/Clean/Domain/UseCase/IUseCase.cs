@@ -1,6 +1,5 @@
-﻿namespace LiteralLifeChurch.ArchiveManagerApi.Clean.Domain.UseCase
+﻿namespace LiteralLifeChurch.ArchiveManagerApi.Clean.Domain.UseCase;
+
+internal interface IUseCase
 {
-    internal interface IUseCase
-    {
-    }
 }

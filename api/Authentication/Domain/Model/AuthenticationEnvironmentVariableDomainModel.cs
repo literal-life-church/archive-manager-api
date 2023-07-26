@@ -1,10 +1,9 @@
-﻿namespace LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model
+﻿namespace LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
+
+internal class AuthenticationEnvironmentVariableDomainModel
 {
-    internal class AuthenticationEnvironmentVariableDomainModel
-    {
-        public string ClientId { get; set; }
-        public string TenantId { get; set; }
-        public string ServiceAccountUsername { get; set; }
-        public string ServiceAccountPassword { get; set; }
-    }
+    public string ClientId { get; set; }
+    public string ServiceAccountPassword { get; set; }
+    public string ServiceAccountUsername { get; set; }
+    public string TenantId { get; set; }
 }
