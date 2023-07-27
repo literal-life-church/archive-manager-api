@@ -35,6 +35,7 @@ internal class Startup : FunctionsStartup
         builder
             .Services
             .AddAuthentication()
+            .AddDrive()
             .AddFactories();
     }
 }
