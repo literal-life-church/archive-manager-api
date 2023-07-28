@@ -26,6 +26,7 @@ internal class Startup : FunctionsStartup
     {
         builder
             .Services
+            .AddLogging()
             .AddOptions<AuthenticationEnvironmentVariableDomainModel>()
             .Configure<IConfiguration>((settings, configuration) =>
             {

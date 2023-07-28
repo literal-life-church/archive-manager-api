@@ -1,63 +1,35 @@
-using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.UseCase;
+using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.UseCase;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graph;
 
 namespace LiteralLifeChurch.ArchiveManagerApi;
 
 internal class IndexAll
 {
-    private readonly GraphServiceClient _client;
+    private readonly IGetAllSharedFilesUseCase _getAllSharedFilesUseCase;
 
-    public IndexAll(IGetAuthenticatedClientUseCase getAuthenticatedClientUseCase)
+    public IndexAll(IGetAllSharedFilesUseCase getAllSharedFilesUseCase)
     {
-        _client = getAuthenticatedClientUseCase.Execute();
+        _getAllSharedFilesUseCase = getAllSharedFilesUseCase;
     }
 
     [FunctionName("IndexAll")]
-    public async Task<string> RunOrchestrator([OrchestrationTrigger] IDurableOrchestrationContext context)
+    public async Task<List<ItemDomainModel>> RunOrchestrator(
+        [OrchestrationTrigger] IDurableOrchestrationContext context)
     {
-        return await context.CallActivityAsync<string>(nameof(CrawlTopLevel), null);
+        return await context.CallActivityAsync<List<ItemDomainModel>>(nameof(CrawlAllSharedFiles), null);
     }
 
-    [FunctionName(nameof(CrawlTopLevel))]
-    public async Task<string> CrawlTopLevel([ActivityTrigger] IDurableActivityContext context)
+    [FunctionName(nameof(CrawlAllSharedFiles))]
+    public async Task<List<ItemDomainModel>> CrawlAllSharedFiles([ActivityTrigger] IDurableActivityContext context)
     {
-        // See: https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1737#issuecomment-1475774056
-        var driveItem = await _client.Me.Drive.GetAsync();
-        var sharedFiles = await _client.Drives[driveItem.Id].SharedWithMe.GetAsync();
-
-        var stringBuilder = new StringBuilder();
-
-
-        foreach (var file in sharedFiles.Value)
-        {
-            stringBuilder.AppendLine(
-                $"Name: {file.Name}, Id: {file.Id}, Drive ID: {file.RemoteItem.ParentReference.DriveId}");
-
-            try
-            {
-                var firstLevel = await _client.Drives[file.RemoteItem.ParentReference.DriveId].Items[file.Id]
-                    .Children.GetAsync();
-
-                foreach (var subfolders in firstLevel.Value)
-                    stringBuilder.AppendLine($"Name: {subfolders.Name}, Id: {subfolders.Id}");
-            }
-            catch (Exception e)
-            {
-                stringBuilder.AppendLine($"Error: {e.Message}");
-            }
-
-            stringBuilder.AppendLine("");
-        }
-
-        return stringBuilder.ToString();
+        return await _getAllSharedFilesUseCase.ExecuteAsync();
     }
 
     [FunctionName("IndexAll_Start")]

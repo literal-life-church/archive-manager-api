@@ -3,6 +3,7 @@ using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.DataSource;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Mapper;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Repository;
+using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.UseCase;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
@@ -21,8 +22,10 @@ internal static class ConfigurationServiceCollectionExtensions
     {
         services
             .AddSingleton<IDriveNetworkDataSource, DriveNetworkDataSource>()
-            .AddSingleton<IDriveIdToStringMapper, DriveIdToStringMapper>()
-            .AddSingleton<IDriveNetworkRepository, DriveNetworkRepository>();
+            .AddSingleton<IDriveItemToItemMapper, DriveItemToItemMapper>()
+            .AddSingleton<IDriveToDriveIdMapper, DriveToDriveIdMapper>()
+            .AddSingleton<IDriveNetworkRepository, DriveNetworkRepository>()
+            .AddSingleton<IGetAllSharedFiles, GetAllSharedFilesUseCase>();
 
         return services;
     }
