@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Repository;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
@@ -29,20 +28,25 @@ internal class GetAllSharedFilesUseCase : IGetAllSharedFilesUseCase
 
         Queue<ItemDomainModel> queue = new(sharedFolderRootLevel);
         List<ItemDomainModel> output = new();
-        var stringBuilder = new StringBuilder();
 
         while (queue.Any())
         {
             var item = queue.Dequeue();
-            output.Add(item);
 
             if (item.IsFolder)
             {
                 var allFilesInSubfolder = await _driveNetworkRepository.GetAllFilesInFolderAsync(item.DriveId, item.Id);
+                _logger.LogDebug(
+                    $"Discovered the folder named: {item.Name}. Adding its children to the queue for processing.");
                 allFilesInSubfolder.ForEach(subFolderItem => queue.Enqueue(subFolderItem));
+            }
+            else
+            {
+                output.Add(item);
             }
         }
 
+        _logger.LogInformation($"Completed crawling. Discovered {output.Count} files(s).");
         return output;
     }
 }
