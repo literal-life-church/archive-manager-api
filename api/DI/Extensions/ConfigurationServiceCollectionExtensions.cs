@@ -25,7 +25,7 @@ internal static class ConfigurationServiceCollectionExtensions
             .AddSingleton<IDriveItemToItemMapper, DriveItemToItemMapper>()
             .AddSingleton<IDriveToDriveIdMapper, DriveToDriveIdMapper>()
             .AddSingleton<IDriveNetworkRepository, DriveNetworkRepository>()
-            .AddSingleton<IGetAllSharedFiles, GetAllSharedFilesUseCase>();
+            .AddSingleton<IGetAllSharedFilesUseCase, GetAllSharedFilesUseCase>();
 
         return services;
     }
