@@ -22,9 +22,13 @@
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.10.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Graph" Version="5.19.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.20.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.2.0" />
     <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+      <!-- Per: https://bryanknox.github.io/2022/07/15/functionsskipcleanoutput-and-functionspreserveddependencies.html -->
+	  <FunctionsPreservedDependencies Include="Microsoft.IdentityModel.Tokens.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

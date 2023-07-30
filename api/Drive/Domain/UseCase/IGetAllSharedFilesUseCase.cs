@@ -7,5 +7,5 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.UseCase;
 
 internal interface IGetAllSharedFilesUseCase : IUseCase
 {
-    Task<List<ItemDomainModel>> ExecuteAsync();
+    Task<List<FileDomainModel>> ExecuteAsync();
 }

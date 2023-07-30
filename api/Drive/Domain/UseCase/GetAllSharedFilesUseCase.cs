@@ -19,30 +19,31 @@ internal class GetAllSharedFilesUseCase : IGetAllSharedFilesUseCase
         _logger = logger;
     }
 
-    public async Task<List<ItemDomainModel>> ExecuteAsync()
+    public async Task<List<FileDomainModel>> ExecuteAsync()
     {
         var myDriveId = await _driveNetworkRepository.GetMyDriveIdAsync();
         _logger.LogDebug("Obtained service account's drive ID.");
         var sharedFolderRootLevel = await _driveNetworkRepository.GetAllRootFilesSharedWithMeAsync(myDriveId);
         _logger.LogDebug("Obtained all root files within the service account's shared folder.");
 
-        Queue<ItemDomainModel> queue = new(sharedFolderRootLevel);
-        List<ItemDomainModel> output = new();
+        Queue<FileDomainModel> queue = new(sharedFolderRootLevel);
+        List<FileDomainModel> output = new();
 
         while (queue.Any())
         {
-            var item = queue.Dequeue();
+            var file = queue.Dequeue();
 
-            if (item.IsFolder)
+            if (file.IsFolder)
             {
-                var allFilesInSubfolder = await _driveNetworkRepository.GetAllFilesInFolderAsync(item.DriveId, item.Id);
+                var allFilesInSubfolder =
+                    await _driveNetworkRepository.GetAllFilesInFolderAsync(file.DriveId, file.Id);
                 _logger.LogDebug(
-                    $"Discovered the folder named: {item.Name}. Adding its children to the queue for processing.");
-                allFilesInSubfolder.ForEach(subFolderItem => queue.Enqueue(subFolderItem));
+                    $"Discovered the folder named: {file.Name}. Adding its children to the queue for processing.");
+                allFilesInSubfolder.ForEach(subFolderFile => queue.Enqueue(subFolderFile));
             }
             else
             {
-                output.Add(item);
+                output.Add(file);
             }
         }
 

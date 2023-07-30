@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.UseCase;
+using LiteralLifeChurch.ArchiveManagerApi.Extraction.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.Extraction.Domain.UseCase;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -12,24 +13,30 @@ namespace LiteralLifeChurch.ArchiveManagerApi;
 
 internal class IndexAll
 {
+    private readonly IExtractMediaMetadataFromFilesUseCase _extractMediaMetadataFromFilesUseCase;
     private readonly IGetAllSharedFilesUseCase _getAllSharedFilesUseCase;
 
-    public IndexAll(IGetAllSharedFilesUseCase getAllSharedFilesUseCase)
+    public IndexAll(IExtractMediaMetadataFromFilesUseCase extractMediaMetadataFromFilesUseCase,
+        IGetAllSharedFilesUseCase getAllSharedFilesUseCase)
     {
+        _extractMediaMetadataFromFilesUseCase = extractMediaMetadataFromFilesUseCase;
         _getAllSharedFilesUseCase = getAllSharedFilesUseCase;
     }
 
     [FunctionName("IndexAll")]
-    public async Task<List<ItemDomainModel>> RunOrchestrator(
+    public async Task<List<MediaMetadataDomainModel>> RunOrchestrator(
         [OrchestrationTrigger] IDurableOrchestrationContext context)
     {
-        return await context.CallActivityAsync<List<ItemDomainModel>>(nameof(CrawlAllSharedFiles), null);
+        return await context.CallActivityAsync<List<MediaMetadataDomainModel>>(nameof(CrawlAllSharedFiles), null);
     }
 
     [FunctionName(nameof(CrawlAllSharedFiles))]
-    public async Task<List<ItemDomainModel>> CrawlAllSharedFiles([ActivityTrigger] IDurableActivityContext context)
+    public async Task<List<MediaMetadataDomainModel>> CrawlAllSharedFiles(
+        [ActivityTrigger] IDurableActivityContext context)
     {
-        return await _getAllSharedFilesUseCase.ExecuteAsync();
+        var files = await _getAllSharedFilesUseCase.ExecuteAsync();
+        var mediaMetadata = _extractMediaMetadataFromFilesUseCase.Execute(files);
+        return mediaMetadata;
     }
 
     [FunctionName("IndexAll_Start")]

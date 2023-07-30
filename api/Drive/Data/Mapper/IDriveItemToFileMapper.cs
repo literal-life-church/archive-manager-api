@@ -5,6 +5,6 @@ using Microsoft.Graph.Models;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Mapper;
 
-internal interface IDriveItemToItemMapper : IMapper<DriveItem?, ItemDomainModel?>
+internal interface IDriveItemToFileMapper : IMapper<DriveItem?, FileDomainModel?>
 {
 }

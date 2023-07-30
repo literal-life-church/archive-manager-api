@@ -2,7 +2,7 @@
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
 
-internal class ItemDomainModel : IDomainModel
+internal class FileDomainModel : IDomainModel
 {
     public string DriveId { get; set; }
     public string Id { get; set; }

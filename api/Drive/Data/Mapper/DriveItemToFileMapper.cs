@@ -4,9 +4,9 @@ using Microsoft.Graph.Models;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Mapper;
 
-internal class DriveItemToItemMapper : IDriveItemToItemMapper
+internal class DriveItemToFileMapper : IDriveItemToFileMapper
 {
-    public ItemDomainModel? Map(DriveItem? input)
+    public FileDomainModel? Map(DriveItem? input)
     {
         if (input == null) return null;
 
@@ -19,7 +19,7 @@ internal class DriveItemToItemMapper : IDriveItemToItemMapper
         else
             return null;
 
-        return new ItemDomainModel
+        return new FileDomainModel
         {
             DriveId = driveId,
             Id = input.Id,
