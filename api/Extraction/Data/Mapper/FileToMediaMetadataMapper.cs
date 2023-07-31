@@ -42,7 +42,7 @@ internal class FileToMediaMetadataMapper : IFileToMediaMetadataMapper
 
     private string[] GetPartsOfFileName(FileDomainModel input)
     {
-        var parts = input.Name.Split(ExtractionConfig.MediaFileNameDelimiter);
+        var parts = input.NameWithoutExtension.Split(ExtractionConfig.MediaFileNameDelimiter);
         var acceptableNumberOfParts = ExtractionConfig.MinNumberOfPartsInMediaFileName <= parts.Length &&
                                       parts.Length <= ExtractionConfig.MaxNumberOfPartsInMediaFileName;
 
@@ -85,7 +85,7 @@ internal class FileToMediaMetadataMapper : IFileToMediaMetadataMapper
 
     private static List<string> GetSpeakers(string input)
     {
-        var cleanInput = input.Trim().ToLower(ExtractionConfig.LanguageCulture);
+        var cleanInput = input.Trim();
         var speakers = cleanInput
             .Split(ExtractionConfig.SpeakerDelimiter)
             .Select(speaker => speaker.Trim())

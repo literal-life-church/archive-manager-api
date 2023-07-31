@@ -8,4 +8,5 @@ internal class FileDomainModel : IDomainModel
     public string Id { get; set; }
     public bool IsFolder { get; set; }
     public string Name { get; set; }
+    public string NameWithoutExtension { get; set; }
 }

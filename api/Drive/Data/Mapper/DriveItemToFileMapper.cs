@@ -8,7 +8,7 @@ internal class DriveItemToFileMapper : IDriveItemToFileMapper
 {
     public FileDomainModel? Map(DriveItem? input)
     {
-        if (input == null) return null;
+        if (input?.Name == null) return null;
 
         string driveId;
 
@@ -19,12 +19,16 @@ internal class DriveItemToFileMapper : IDriveItemToFileMapper
         else
             return null;
 
+        var lastIndex = input.Name.LastIndexOf('.');
+        var nameWithoutExtension = lastIndex > 0 ? input.Name[..lastIndex] : input.Name;
+
         return new FileDomainModel
         {
             DriveId = driveId,
             Id = input.Id,
             IsFolder = input.Folder != null,
-            Name = input.Name
+            Name = input.Name,
+            NameWithoutExtension = nameWithoutExtension
         };
     }
 }
