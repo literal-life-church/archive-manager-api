@@ -1,5 +1,4 @@
-﻿#nullable enable
-using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
+﻿using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Mapper;
 

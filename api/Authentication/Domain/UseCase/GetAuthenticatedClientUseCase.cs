@@ -1,5 +1,5 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
-using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
+﻿using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
+using LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 

@@ -7,7 +7,7 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Repository;
 
 internal interface IDriveNetworkRepository : IRepository
 {
-    Task<List<ItemDomainModel>> GetAllFilesInFolderAsync(string driveId, string fileId);
-    Task<List<ItemDomainModel>> GetAllRootFilesSharedWithMeAsync(string myDriveId);
+    Task<List<FileDomainModel>> GetAllFilesInFolderAsync(string driveId, string fileId);
+    Task<List<FileDomainModel>> GetAllRootFilesSharedWithMeAsync(string myDriveId);
     Task<string> GetMyDriveIdAsync();
 }
