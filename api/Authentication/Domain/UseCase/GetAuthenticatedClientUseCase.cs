@@ -1,5 +1,5 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
-using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
+﻿using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
+using LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 
@@ -13,12 +13,12 @@ internal class GetAuthenticatedClientUseCase : IGetAuthenticatedClientUseCase
     private readonly IUsernamePasswordCredentialFactory _usernamePasswordCredentialFactory;
 
     public GetAuthenticatedClientUseCase(
-        IOptions<AuthenticationEnvironmentVariableDomainModel> authenticationEnvironmentVariableDomainModel,
+        IOptions<AuthenticationEnvironmentVariableDomainModel> environmentVariableDomainModel,
         IGraphServiceClientFactory graphServiceClientFactory,
         ITokenCredentialOptionsFactory tokenCredentialOptionsFactory,
         IUsernamePasswordCredentialFactory usernamePasswordCredentialFactory)
     {
-        _authenticationEnvironmentVariableDomainModel = authenticationEnvironmentVariableDomainModel.Value;
+        _authenticationEnvironmentVariableDomainModel = environmentVariableDomainModel.Value;
         _graphServiceClientFactory = graphServiceClientFactory;
         _tokenCredentialOptionsFactory = tokenCredentialOptionsFactory;
         _usernamePasswordCredentialFactory = usernamePasswordCredentialFactory;

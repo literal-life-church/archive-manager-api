@@ -1,6 +1,6 @@
 ﻿using LiteralLifeChurch.ArchiveManagerApi;
-using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
+using LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

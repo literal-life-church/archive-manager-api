@@ -17,6 +17,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Microsoft;Serverless;Azure;OneDrive;Azure Functions;Microsoft Graph API;Microsoft Graph;OneDrive for Business</PackageTags>
   </PropertyGroup>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.9.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />

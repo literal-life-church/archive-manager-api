@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.Extraction.Data.Mapper;
 using LiteralLifeChurch.ArchiveManagerApi.Extraction.Domain.Model;
@@ -17,15 +16,6 @@ internal class MediaMetadataMemoryRepository : IMediaMetadataMemoryRepository
 
     public List<MediaMetadataDomainModel> ExtractMetadata(List<FileDomainModel> files)
     {
-        try
-        {
-            return _fileToMediaMetadataMapper.Map(files);
-        }
-        catch (Exception e)
-        {
-            var x = 1;
-            var y = e;
-            throw;
-        }
+        return _fileToMediaMetadataMapper.Map(files);
     }
 }

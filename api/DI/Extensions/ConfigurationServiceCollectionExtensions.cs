@@ -47,6 +47,7 @@ internal static class ConfigurationServiceCollectionExtensions
     public static IServiceCollection AddFactories(this IServiceCollection services)
     {
         services
+            .AddSingleton<IDirectoryInfoFactory, DirectoryInfoFactory>()
             .AddSingleton<IGraphServiceClientFactory, GraphServiceClientFactory>()
             .AddSingleton<ITokenCredentialOptionsFactory, TokenCredentialOptionsFactory>()
             .AddSingleton<IUsernamePasswordCredentialFactory, UsernamePasswordCredentialFactory>();
@@ -57,6 +58,7 @@ internal static class ConfigurationServiceCollectionExtensions
     public static IServiceCollection AddForwarders(this IServiceCollection services)
     {
         services
+            .AddSingleton<ICultureInfoForwarder, CultureInfoForwarder>()
             .AddSingleton<IDateTimeForwarder, DateTimeForwarder>();
 
         return services;

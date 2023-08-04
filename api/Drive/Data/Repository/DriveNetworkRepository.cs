@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.DataSource;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Mapper;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.Extensions;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Drive.Data.Repository;
 
@@ -36,7 +37,7 @@ internal class DriveNetworkRepository : IDriveNetworkRepository
         return driveItem
             .Value
             .Select(item => _driveItemToFileMapper.Map(item))
-            .Where(item => item != null)
+            .WhereNotNull()
             .ToList();
     }
 
@@ -48,7 +49,7 @@ internal class DriveNetworkRepository : IDriveNetworkRepository
         return sharedWithMe
             .Value
             .Select(item => _driveItemToFileMapper.Map(item))
-            .Where(item => item != null)
+            .WhereNotNull()
             .ToList();
     }
 }
