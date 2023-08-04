@@ -13,12 +13,12 @@ internal class GetAuthenticatedClientUseCase : IGetAuthenticatedClientUseCase
     private readonly IUsernamePasswordCredentialFactory _usernamePasswordCredentialFactory;
 
     public GetAuthenticatedClientUseCase(
-        IOptions<AuthenticationEnvironmentVariableDomainModel> environmentVariableDomainModel,
+        IOptions<AuthenticationEnvironmentVariableDomainModel> authenticationEnvironmentVariableDomainModel,
         IGraphServiceClientFactory graphServiceClientFactory,
         ITokenCredentialOptionsFactory tokenCredentialOptionsFactory,
         IUsernamePasswordCredentialFactory usernamePasswordCredentialFactory)
     {
-        _authenticationEnvironmentVariableDomainModel = environmentVariableDomainModel.Value;
+        _authenticationEnvironmentVariableDomainModel = authenticationEnvironmentVariableDomainModel.Value;
         _graphServiceClientFactory = graphServiceClientFactory;
         _tokenCredentialOptionsFactory = tokenCredentialOptionsFactory;
         _usernamePasswordCredentialFactory = usernamePasswordCredentialFactory;
