@@ -1,7 +1,9 @@
 ﻿#nullable disable // Since it is populated by the Functions Configuration Builder in Startup.cs
-namespace LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.Clean.Domain.Model;
 
-internal class AuthenticationEnvironmentVariableDomainModel
+namespace LiteralLifeChurch.ArchiveManagerApi.Config.Domain.Model;
+
+internal class AuthenticationOptionsDomainModel : IDomainModel
 {
     public string ClientId { get; set; }
     public string ServiceAccountPassword { get; set; }

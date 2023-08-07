@@ -1,6 +1,6 @@
 ﻿using LiteralLifeChurch.ArchiveManagerApi;
+using LiteralLifeChurch.ArchiveManagerApi.Config.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
-using LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,19 +26,32 @@ internal class Startup : FunctionsStartup
     {
         builder
             .Services
-            .AddLogging()
-            .AddOptions<AuthenticationEnvironmentVariableDomainModel>()
+            .AddOptions<AuthenticationOptionsDomainModel>()
             .Configure<IConfiguration>((settings, configuration) =>
             {
-                configuration.GetSection("ArchiveManagerApi").Bind(settings);
+                configuration
+                    .GetSection("ArchiveManagerApi:Auth")
+                    .Bind(settings);
             });
 
         builder
             .Services
-            .AddAuthentication()
+            .AddOptions<ConfigurationOptionsDomainModel>()
+            .Configure<IConfiguration>((settings, configuration) =>
+            {
+                configuration
+                    .GetSection("ArchiveManagerApi:Options")
+                    .Bind(settings);
+            });
+
+        builder
+            .Services
+            .AddConfiguration()
+            .AddCorrelation()
             .AddDrive()
             .AddExtraction()
             .AddFactories()
-            .AddForwarders();
+            .AddForwarders()
+            .AddLogging();
     }
 }

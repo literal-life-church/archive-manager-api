@@ -1,4 +1,4 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.UseCase;
+﻿using LiteralLifeChurch.ArchiveManagerApi.Config.Domain.UseCase;
 using Microsoft.Graph;
 using Microsoft.Graph.Drives.Item.Items.Item.Children;
 using Microsoft.Graph.Drives.Item.SharedWithMe;

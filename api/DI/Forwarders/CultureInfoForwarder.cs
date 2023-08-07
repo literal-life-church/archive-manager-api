@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using LiteralLifeChurch.ArchiveManagerApi.Global;
+using LiteralLifeChurch.ArchiveManagerApi.Config;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.DI.Forwarders;
 
