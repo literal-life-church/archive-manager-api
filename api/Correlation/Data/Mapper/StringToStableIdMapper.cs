@@ -4,14 +4,14 @@ using LiteralLifeChurch.ArchiveManagerApi.DI.Forwarders;
 
 namespace LiteralLifeChurch.ArchiveManagerApi.Correlation.Data.Mapper;
 
-internal class StringToHashMapper : IStringToHashMapper
+internal class StringToStableIdMapper : IStringToStableIdMapper
 {
     private readonly IRegexForwarder _regexForwarder;
     private readonly ISha1Forwarder _sha1Forwarder;
     private readonly IStringBuilderFactory _stringBuilderFactory;
     private readonly IUtf8Forwarder _utf8Forwarder;
 
-    public StringToHashMapper(IRegexForwarder regexForwarder, ISha1Forwarder sha1Forwarder,
+    public StringToStableIdMapper(IRegexForwarder regexForwarder, ISha1Forwarder sha1Forwarder,
         IStringBuilderFactory stringBuilderFactory,
         IUtf8Forwarder utf8Forwarder)
     {

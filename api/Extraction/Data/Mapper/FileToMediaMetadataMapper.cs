@@ -46,6 +46,7 @@ internal class FileToMediaMetadataMapper : IFileToMediaMetadataMapper
                 return new MediaMetadataDomainModel(
                     file.ParentFolderName,
                     GetDate(parts[0]),
+                    file.Id,
                     GetSpeakers(parts[1]),
                     isPartOfNamedSeries ? GetSeriesOrTitle(parts[2]) : null,
                     isPartOfNamedSeries ? GetSeriesOrTitle(parts[3]) : GetSeriesOrTitle(parts[2])

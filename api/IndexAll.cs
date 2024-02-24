@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LiteralLifeChurch.ArchiveManagerApi.Correlation.Domain.Model;
+using LiteralLifeChurch.ArchiveManagerApi.Correlation.Domain.UseCase;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.UseCase;
-using LiteralLifeChurch.ArchiveManagerApi.Extraction.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.Extraction.Domain.UseCase;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
@@ -13,30 +14,36 @@ namespace LiteralLifeChurch.ArchiveManagerApi;
 
 internal class IndexAll
 {
+    private readonly IExtractCorrelationsFromMetadataUseCase _extractCorrelationsFromMetadataUseCase;
     private readonly IExtractMediaMetadataFromFilesUseCase _extractMediaMetadataFromFilesUseCase;
     private readonly IGetAllSharedFilesUseCase _getAllSharedFilesUseCase;
 
-    public IndexAll(IExtractMediaMetadataFromFilesUseCase extractMediaMetadataFromFilesUseCase,
+    public IndexAll(
+        IExtractCorrelationsFromMetadataUseCase extractCorrelationsFromMetadataUseCase,
+        IExtractMediaMetadataFromFilesUseCase extractMediaMetadataFromFilesUseCase,
         IGetAllSharedFilesUseCase getAllSharedFilesUseCase)
     {
+        _extractCorrelationsFromMetadataUseCase = extractCorrelationsFromMetadataUseCase;
         _extractMediaMetadataFromFilesUseCase = extractMediaMetadataFromFilesUseCase;
         _getAllSharedFilesUseCase = getAllSharedFilesUseCase;
     }
 
     [FunctionName("IndexAll")]
-    public async Task<List<MediaMetadataDomainModel>> RunOrchestrator(
+    public async Task<CorrelationsDomainModel> RunOrchestrator(
         [OrchestrationTrigger] IDurableOrchestrationContext context)
     {
-        return await context.CallActivityAsync<List<MediaMetadataDomainModel>>(nameof(CrawlAllSharedFiles), null);
+        return await context.CallActivityAsync<CorrelationsDomainModel>(nameof(CrawlAllSharedFiles),
+            null);
     }
 
     [FunctionName(nameof(CrawlAllSharedFiles))]
-    public async Task<List<MediaMetadataDomainModel>> CrawlAllSharedFiles(
+    public async Task<CorrelationsDomainModel> CrawlAllSharedFiles(
         [ActivityTrigger] IDurableActivityContext context)
     {
         var files = await _getAllSharedFilesUseCase.ExecuteAsync();
         var mediaMetadata = _extractMediaMetadataFromFilesUseCase.Execute(files);
-        return mediaMetadata;
+        var categories = _extractCorrelationsFromMetadataUseCase.Execute(mediaMetadata);
+        return categories;
     }
 
     [FunctionName("IndexAll_Start")]

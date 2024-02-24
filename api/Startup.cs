@@ -1,4 +1,5 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi;
+﻿using System.Text.Json;
+using LiteralLifeChurch.ArchiveManagerApi;
 using LiteralLifeChurch.ArchiveManagerApi.Config.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -15,7 +16,8 @@ internal class Startup : FunctionsStartup
     {
         var context = builder.GetContext();
 
-        builder.ConfigurationBuilder
+        builder
+            .ConfigurationBuilder
             .SetBasePath(context.ApplicationRootPath)
             .AddJsonFile("local.settings.json", true, true)
             .AddJsonFile("settings.json", true, true)
@@ -42,6 +44,13 @@ internal class Startup : FunctionsStartup
                 configuration
                     .GetSection("ArchiveManagerApi:Options")
                     .Bind(settings);
+            });
+
+        builder
+            .Services
+            .Configure<JsonSerializerOptions>(options =>
+            {
+                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             });
 
         builder

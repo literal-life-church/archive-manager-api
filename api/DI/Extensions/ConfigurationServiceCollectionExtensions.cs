@@ -30,7 +30,7 @@ internal static class ConfigurationServiceCollectionExtensions
             .AddSingleton<IConfigurationOptionsEnvironmentVariableRepository,
                 ConfigurationOptionsEnvironmentVariableRepository>()
             .AddSingleton<IGetAuthenticatedClientUseCase, GetAuthenticatedClientUseCase>()
-            .AddScoped<IGetConfigurationOptionsUseCase, GetConfigurationOptionsUseCase>();
+            .AddSingleton<IGetConfigurationOptionsUseCase, GetConfigurationOptionsUseCase>();
 
         return services;
     }
@@ -39,7 +39,8 @@ internal static class ConfigurationServiceCollectionExtensions
     {
         services
             .AddSingleton<IExtractCorrelationsFromMetadataUseCase, ExtractCorrelationsFromMetadataUseCase>()
-            .AddSingleton<IStringToHashMapper, StringToHashMapper>();
+            .AddSingleton<IMetadataToCorrelationsMapper, MetadataToCorrelationsMapper>()
+            .AddSingleton<IStringToStableIdMapper, StringToStableIdMapper>();
 
         return services;
     }
