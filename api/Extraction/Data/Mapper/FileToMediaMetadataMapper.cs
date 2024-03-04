@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LiteralLifeChurch.ArchiveManagerApi.Config;
+using LiteralLifeChurch.ArchiveManagerApi.Config.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Forwarders;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.Extensions;
 using LiteralLifeChurch.ArchiveManagerApi.Extraction.Domain.Model;
-using LiteralLifeChurch.ArchiveManagerApi.Global;
-using LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -15,17 +15,17 @@ namespace LiteralLifeChurch.ArchiveManagerApi.Extraction.Data.Mapper;
 
 internal class FileToMediaMetadataMapper : IFileToMediaMetadataMapper
 {
-    private readonly AuthenticationEnvironmentVariableDomainModel _authenticationEnvironmentVariableDomainModel;
+    private readonly AuthenticationOptionsDomainModel _authenticationOptionsDomainModel;
     private readonly ICultureInfoForwarder _cultureInfoForwarder;
     private readonly IDateTimeForwarder _dateTimeForwarder;
     private readonly ILogger<FileToMediaMetadataMapper> _logger;
 
     public FileToMediaMetadataMapper(ICultureInfoForwarder cultureInfoForwarder,
-        IOptions<AuthenticationEnvironmentVariableDomainModel> authenticationEnvironmentVariableDomainModel,
+        IOptions<AuthenticationOptionsDomainModel> authenticationEnvironmentVariableDomainModel,
         IDateTimeForwarder dateTimeForwarder,
         ILogger<FileToMediaMetadataMapper> logger)
     {
-        _authenticationEnvironmentVariableDomainModel = authenticationEnvironmentVariableDomainModel.Value;
+        _authenticationOptionsDomainModel = authenticationEnvironmentVariableDomainModel.Value;
         _cultureInfoForwarder = cultureInfoForwarder;
         _dateTimeForwarder = dateTimeForwarder;
         _logger = logger;
@@ -46,6 +46,7 @@ internal class FileToMediaMetadataMapper : IFileToMediaMetadataMapper
                 return new MediaMetadataDomainModel(
                     file.ParentFolderName,
                     GetDate(parts[0]),
+                    file.Id,
                     GetSpeakers(parts[1]),
                     isPartOfNamedSeries ? GetSeriesOrTitle(parts[2]) : null,
                     isPartOfNamedSeries ? GetSeriesOrTitle(parts[3]) : GetSeriesOrTitle(parts[2])

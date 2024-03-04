@@ -1,6 +1,7 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi;
+﻿using System.Text.Json;
+using LiteralLifeChurch.ArchiveManagerApi;
+using LiteralLifeChurch.ArchiveManagerApi.Config.Domain.Model;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
-using LiteralLifeChurch.ArchiveManagerApi.Global.Domain.Model;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,8 @@ internal class Startup : FunctionsStartup
     {
         var context = builder.GetContext();
 
-        builder.ConfigurationBuilder
+        builder
+            .ConfigurationBuilder
             .SetBasePath(context.ApplicationRootPath)
             .AddJsonFile("local.settings.json", true, true)
             .AddJsonFile("settings.json", true, true)
@@ -26,19 +28,39 @@ internal class Startup : FunctionsStartup
     {
         builder
             .Services
-            .AddLogging()
-            .AddOptions<AuthenticationEnvironmentVariableDomainModel>()
+            .AddOptions<AuthenticationOptionsDomainModel>()
             .Configure<IConfiguration>((settings, configuration) =>
             {
-                configuration.GetSection("ArchiveManagerApi").Bind(settings);
+                configuration
+                    .GetSection("ArchiveManagerApi:Auth")
+                    .Bind(settings);
             });
 
         builder
             .Services
-            .AddAuthentication()
+            .AddOptions<ConfigurationOptionsDomainModel>()
+            .Configure<IConfiguration>((settings, configuration) =>
+            {
+                configuration
+                    .GetSection("ArchiveManagerApi:Options")
+                    .Bind(settings);
+            });
+
+        builder
+            .Services
+            .Configure<JsonSerializerOptions>(options =>
+            {
+                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            });
+
+        builder
+            .Services
+            .AddConfiguration()
+            .AddCorrelation()
             .AddDrive()
             .AddExtraction()
             .AddFactories()
-            .AddForwarders();
+            .AddForwarders()
+            .AddLogging();
     }
 }

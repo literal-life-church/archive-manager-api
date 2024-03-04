@@ -1,4 +1,8 @@
-﻿using LiteralLifeChurch.ArchiveManagerApi.Authentication.Domain.UseCase;
+﻿using LiteralLifeChurch.ArchiveManagerApi.Config.Data.DataSource;
+using LiteralLifeChurch.ArchiveManagerApi.Config.Data.Repository;
+using LiteralLifeChurch.ArchiveManagerApi.Config.Domain.UseCase;
+using LiteralLifeChurch.ArchiveManagerApi.Correlation.Data.Mapper;
+using LiteralLifeChurch.ArchiveManagerApi.Correlation.Domain.UseCase;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Factories;
 using LiteralLifeChurch.ArchiveManagerApi.DI.Forwarders;
 using LiteralLifeChurch.ArchiveManagerApi.Drive.Data.DataSource;
@@ -14,10 +18,29 @@ namespace LiteralLifeChurch.ArchiveManagerApi.DI.Extensions;
 
 internal static class ConfigurationServiceCollectionExtensions
 {
-    public static IServiceCollection AddAuthentication(this IServiceCollection services)
+    public static IServiceCollection AddConfiguration(this IServiceCollection services)
     {
         services
-            .AddSingleton<IGetAuthenticatedClientUseCase, GetAuthenticatedClientUseCase>();
+            .AddSingleton<IAuthenticationOptionsEnvironmentVariableDataSource,
+                AuthenticationOptionsEnvironmentVariableDataSource>()
+            .AddSingleton<IAuthenticationOptionsEnvironmentVariableRepository,
+                AuthenticationOptionsEnvironmentVariableRepository>()
+            .AddSingleton<IConfigurationOptionsEnvironmentVariableDataSource,
+                ConfigurationOptionsEnvironmentVariableDataSource>()
+            .AddSingleton<IConfigurationOptionsEnvironmentVariableRepository,
+                ConfigurationOptionsEnvironmentVariableRepository>()
+            .AddSingleton<IGetAuthenticatedClientUseCase, GetAuthenticatedClientUseCase>()
+            .AddSingleton<IGetConfigurationOptionsUseCase, GetConfigurationOptionsUseCase>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddCorrelation(this IServiceCollection services)
+    {
+        services
+            .AddSingleton<IExtractCorrelationsFromMetadataUseCase, ExtractCorrelationsFromMetadataUseCase>()
+            .AddSingleton<IMetadataToCorrelationsMapper, MetadataToCorrelationsMapper>()
+            .AddSingleton<IStringToStableIdMapper, StringToStableIdMapper>();
 
         return services;
     }
@@ -49,6 +72,7 @@ internal static class ConfigurationServiceCollectionExtensions
         services
             .AddSingleton<IDirectoryInfoFactory, DirectoryInfoFactory>()
             .AddSingleton<IGraphServiceClientFactory, GraphServiceClientFactory>()
+            .AddSingleton<IStringBuilderFactory, StringBuilderFactory>()
             .AddSingleton<ITokenCredentialOptionsFactory, TokenCredentialOptionsFactory>()
             .AddSingleton<IUsernamePasswordCredentialFactory, UsernamePasswordCredentialFactory>();
 
@@ -59,7 +83,10 @@ internal static class ConfigurationServiceCollectionExtensions
     {
         services
             .AddSingleton<ICultureInfoForwarder, CultureInfoForwarder>()
-            .AddSingleton<IDateTimeForwarder, DateTimeForwarder>();
+            .AddSingleton<IDateTimeForwarder, DateTimeForwarder>()
+            .AddSingleton<IRegexForwarder, RegexForwarder>()
+            .AddSingleton<ISha1Forwarder, Sha1Forwarder>()
+            .AddSingleton<IUtf8Forwarder, Utf8Forwarder>();
 
         return services;
     }
