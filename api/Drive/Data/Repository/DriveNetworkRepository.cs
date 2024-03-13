@@ -43,7 +43,7 @@ internal class DriveNetworkRepository : IDriveNetworkRepository
 
     public async Task<List<FileDomainModel>> GetAllRootFilesSharedWithMeAsync(string myDriveId)
     {
-        var sharedWithMe = await _dataSource.GetAllRootFilesSharedWithMe(myDriveId).GetAsync();
+        var sharedWithMe = await _dataSource.GetAllRootFilesSharedWithMe(myDriveId).GetAsSharedWithMeGetResponseAsync();
         if (sharedWithMe?.Value == null) return new List<FileDomainModel>();
 
         return sharedWithMe
