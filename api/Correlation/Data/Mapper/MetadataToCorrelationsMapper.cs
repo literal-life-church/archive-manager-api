@@ -42,12 +42,17 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
             .Values
             .OrderBy(eventModel => eventModel.Date)
             .ToList();
+        
+        var sortedSpeakersList = speakers
+            .Values
+            .OrderBy(speaker => speaker.Name)
+            .ToList();
 
         return new CorrelationsDomainModel(
             new List<CorrelationsDomainModel.CategoryModel>(),
             sortedEventsList,
             new List<CorrelationsDomainModel.SeriesModel>(),
-            speakers.Values.ToList()
+            sortedSpeakersList
         );
     }
 
