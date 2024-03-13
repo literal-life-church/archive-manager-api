@@ -22,14 +22,17 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
 
     public CorrelationsDomainModel Map(List<MediaMetadataDomainModel> input)
     {
-        var categories = PreLoadCategoriesFromConfiguration(); // Known in advance and cached now
+        var categories = LoadCategoriesIntoCache(); // Known in advance and cached now
         var events = new Dictionary<string, CorrelationsDomainModel.EventModel>();
         var series = new Dictionary<string, CorrelationsDomainModel.SeriesModel>();
         var speakers = new Dictionary<string, CorrelationsDomainModel.SpeakerModel>();
 
         input
-            .ForEach(mediaMetadata => { LoadEventIntoCache(ref events, mediaMetadata); });
-        
+            .ForEach(mediaMetadata => LoadEventsIntoCache(ref events, mediaMetadata));
+
+        input
+            .ForEach(mediaMetadata => LoadSpeakersIntoCache(ref speakers, mediaMetadata));
+
         var sortedCategoryList = categories
             .Values
             .OrderBy(category => category.DisplayOrder)
@@ -39,37 +42,21 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
             .Values
             .OrderBy(eventModel => eventModel.Date)
             .ToList();
+        
+        var sortedSpeakersList = speakers
+            .Values
+            .OrderBy(speaker => speaker.Name)
+            .ToList();
 
         return new CorrelationsDomainModel(
             new List<CorrelationsDomainModel.CategoryModel>(),
             sortedEventsList,
             new List<CorrelationsDomainModel.SeriesModel>(),
-            new List<CorrelationsDomainModel.SpeakerModel>()
+            sortedSpeakersList
         );
     }
 
-    private void LoadEventIntoCache(ref Dictionary<string, CorrelationsDomainModel.EventModel> events,
-        MediaMetadataDomainModel mediaMetadata)
-    {
-        // For the format code, see:
-        // https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#RFC1123
-        var eventId = _stringToStableIdMapper.Map(mediaMetadata.Date.ToString("R"));
-        
-        if (!events.ContainsKey(eventId))
-        {
-            events[eventId] = new CorrelationsDomainModel.EventModel(
-                mediaMetadata.Date,
-                new List<CorrelationsDomainModel.MediaEntryModel>()
-            );
-        }
-
-        events[eventId].Media.Add(new CorrelationsDomainModel.MediaEntryModel(
-            mediaMetadata.FileId,
-            mediaMetadata.Title
-        ));
-    }
-
-    private Dictionary<string, CorrelationsDomainModel.CategoryModel> PreLoadCategoriesFromConfiguration()
+    private Dictionary<string, CorrelationsDomainModel.CategoryModel> LoadCategoriesIntoCache()
     {
         var cachedCategories = new Dictionary<string, CorrelationsDomainModel.CategoryModel>();
 
@@ -91,18 +78,47 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
         return cachedCategories;
     }
 
-    private Dictionary<string, CorrelationsDomainModel.SpeakerModel> CacheSpeakersFromConfiguration(
-        List<MediaMetadataDomainModel> mediaMetadata)
+    private void LoadEventsIntoCache(
+        ref Dictionary<string, CorrelationsDomainModel.EventModel> events,
+        MediaMetadataDomainModel mediaMetadata)
     {
-        var speakerIndex = 0;
-        var cachedSpeakers = new Dictionary<string, CorrelationsDomainModel.SpeakerModel>();
+        // For the format code, see:
+        // https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#RFC1123
+        var eventId = _stringToStableIdMapper.Map(mediaMetadata.Date.ToString("R"));
+        var speakerIds = mediaMetadata
+            .Speakers
+            .Select(speaker => _stringToStableIdMapper.Map(speaker))
+            .ToList();
 
-        //mediaMetadata
-        //    .ForEach(mediaItem =>
-        //    {
-        //        var id: string = _stringToStableIdMapper.Map(mediaItem.Speakers);
-        //    });
+        if (!events.ContainsKey(eventId))
+        {
+            events[eventId] = new CorrelationsDomainModel.EventModel(
+                mediaMetadata.Date,
+                new List<CorrelationsDomainModel.MediaEntryModel>()
+            );
+        }
 
-        return cachedSpeakers;
+        events[eventId].Media.Add(new CorrelationsDomainModel.MediaEntryModel(
+            mediaMetadata.FileId,
+            speakerIds,
+            mediaMetadata.Title
+        ));
+    }
+
+
+    private void LoadSpeakersIntoCache(
+        ref Dictionary<string, CorrelationsDomainModel.SpeakerModel> speakers,
+        MediaMetadataDomainModel mediaMetadata)
+    {
+        foreach (var speaker in mediaMetadata.Speakers)
+        {
+            var speakerId = _stringToStableIdMapper.Map(speaker);
+            if (speakers.ContainsKey(speakerId)) continue;
+
+            speakers[speakerId] = new CorrelationsDomainModel.SpeakerModel(
+                speakerId,
+                speaker
+            );
+        }
     }
 }

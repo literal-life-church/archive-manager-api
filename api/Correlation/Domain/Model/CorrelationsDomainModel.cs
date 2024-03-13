@@ -172,22 +172,22 @@ internal class CorrelationsDomainModel : IDomainModel
     {
         public MediaEntryModel(
             // CategoryOccurrenceModel category,
-            // List<SpeakerOccurrenceModel> speakers,
             // SeriesOccurrenceModel? series,
             string id,
+            List<string> speakers,
             string title)
         {
             // Category = category;
-            // Speakers = speakers;
             // Series = series;
             Id = id;
+            Speakers = speakers;
             Title = title;
         }
 
         // public CategoryOccurrenceModel Category { get; set; }
-        // public List<SpeakerOccurrenceModel> Speakers { get; set; }
         // public SeriesOccurrenceModel? Series { get; set; }
         public string Id { get; set; }
+        public List<string> Speakers { get; set; }
         public string Title { get; set; }
     }
 
@@ -223,27 +223,14 @@ internal class CorrelationsDomainModel : IDomainModel
 
     internal class SpeakerModel
     {
-        public SpeakerModel(string name, string id, string occurrences)
+        public SpeakerModel(string id, string name)
         {
-            Name = name;
             Id = id;
-            Occurrences = occurrences;
+            Name = name;
         }
+        
+        public string Id { get; set; }
 
         public string Name { get; set; }
-        public string Id { get; set; }
-        public string Occurrences { get; set; }
-    }
-
-    internal class SpeakerOccurrenceModel
-    {
-        public SpeakerOccurrenceModel(string name, string id)
-        {
-            Name = name;
-            Id = id;
-        }
-
-        public string Name { get; set; }
-        public string Id { get; set; }
     }
 }
