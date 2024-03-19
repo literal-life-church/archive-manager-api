@@ -26,11 +26,18 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
         var events = new Dictionary<string, CorrelationsDomainModel.EventModel>();
         var series = new Dictionary<string, CorrelationsDomainModel.SeriesModel>();
         var speakers = new Dictionary<string, CorrelationsDomainModel.SpeakerModel>();
+        
+        var sortedInputByDate = input
+            .OrderBy(mediaMetadata => mediaMetadata.Date)
+            .ToList();
+        
+        sortedInputByDate
+            .ForEach(mediaMetadata => LoadSeriesIntoCache(ref series, mediaMetadata));
 
-        input
-            .ForEach(mediaMetadata => LoadEventsIntoCache(ref events, mediaMetadata));
+        sortedInputByDate
+            .ForEach(mediaMetadata => LoadEventsIntoCache(ref events, ref series, mediaMetadata));
 
-        input
+        sortedInputByDate
             .ForEach(mediaMetadata => LoadSpeakersIntoCache(ref speakers, mediaMetadata));
 
         var sortedCategoryList = categories
@@ -43,6 +50,11 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
             .OrderBy(eventModel => eventModel.Date)
             .ToList();
         
+        var sortedSeriesList = series
+            .Values
+            .OrderBy(seriesModel => seriesModel.LastOccurrence)
+            .ToList();
+        
         var sortedSpeakersList = speakers
             .Values
             .OrderBy(speaker => speaker.Name)
@@ -51,9 +63,37 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
         return new CorrelationsDomainModel(
             new List<CorrelationsDomainModel.CategoryModel>(),
             sortedEventsList,
-            new List<CorrelationsDomainModel.SeriesModel>(),
+            sortedSeriesList,
             sortedSpeakersList
         );
+    }
+    
+    private string GetEventId(MediaMetadataDomainModel mediaMetadata)
+    {
+        // For the format code, see:
+        // https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#RFC1123
+        return _stringToStableIdMapper.Map(mediaMetadata.Date.ToString("R"));
+    }
+    
+    private string GetSeriesId(MediaMetadataDomainModel mediaMetadata)
+    {
+        var seriesNameToUse = GetSeriesName(mediaMetadata);
+        var speakerIds = string.Join(",", GetSpeakerIds(mediaMetadata));
+        return _stringToStableIdMapper.Map($"{seriesNameToUse}-{speakerIds}");
+    }
+    
+    private static string GetSeriesName(MediaMetadataDomainModel mediaMetadata)
+    {
+        return mediaMetadata.Series ?? mediaMetadata.Title;
+    }
+    
+    private List<string> GetSpeakerIds(MediaMetadataDomainModel mediaMetadata)
+    {
+        return mediaMetadata
+            .Speakers
+            .OrderBy(speaker => speaker)
+            .Select(speaker => _stringToStableIdMapper.Map(speaker))
+            .ToList();
     }
 
     private Dictionary<string, CorrelationsDomainModel.CategoryModel> LoadCategoriesIntoCache()
@@ -80,15 +120,12 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
 
     private void LoadEventsIntoCache(
         ref Dictionary<string, CorrelationsDomainModel.EventModel> events,
+        ref Dictionary<string, CorrelationsDomainModel.SeriesModel> series,
         MediaMetadataDomainModel mediaMetadata)
     {
-        // For the format code, see:
-        // https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#RFC1123
-        var eventId = _stringToStableIdMapper.Map(mediaMetadata.Date.ToString("R"));
-        var speakerIds = mediaMetadata
-            .Speakers
-            .Select(speaker => _stringToStableIdMapper.Map(speaker))
-            .ToList();
+        var eventId = GetEventId(mediaMetadata);
+        var speakerIds = GetSpeakerIds(mediaMetadata);
+        var seriesId = GetSeriesId(mediaMetadata);
 
         if (!events.ContainsKey(eventId))
         {
@@ -98,11 +135,40 @@ internal class MetadataToCorrelationsMapper : IMetadataToCorrelationsMapper
             );
         }
 
+        if (series[seriesId].LastOccurrence < mediaMetadata.Date)
+        {
+            series[seriesId].LastOccurrence = mediaMetadata.Date;
+            series[seriesId].TotalParts += 1;
+        }
+
         events[eventId].Media.Add(new CorrelationsDomainModel.MediaEntryModel(
             mediaMetadata.FileId,
+            new CorrelationsDomainModel.SeriesOccurrenceModel(
+                seriesId,
+                series[seriesId].TotalParts
+            ),
             speakerIds,
             mediaMetadata.Title
         ));
+    }
+    
+    private void LoadSeriesIntoCache(
+        ref Dictionary<string, CorrelationsDomainModel.SeriesModel> series,
+        MediaMetadataDomainModel mediaMetadata)
+    {
+        var seriesNameToUse = GetSeriesName(mediaMetadata);
+        var seriesId = GetSeriesId(mediaMetadata);
+
+        if (!series.ContainsKey(seriesId))
+        {
+            series[seriesId] = new CorrelationsDomainModel.SeriesModel(
+                seriesId,
+                seriesNameToUse,
+                1,
+                mediaMetadata.Date,
+                mediaMetadata.Date
+            );
+        }
     }
 
 

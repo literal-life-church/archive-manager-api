@@ -172,53 +172,58 @@ internal class CorrelationsDomainModel : IDomainModel
     {
         public MediaEntryModel(
             // CategoryOccurrenceModel category,
-            // SeriesOccurrenceModel? series,
             string id,
+            SeriesOccurrenceModel series,
             List<string> speakers,
             string title)
         {
             // Category = category;
-            // Series = series;
             Id = id;
+            Series = series;
             Speakers = speakers;
             Title = title;
         }
 
         // public CategoryOccurrenceModel Category { get; set; }
-        // public SeriesOccurrenceModel? Series { get; set; }
         public string Id { get; set; }
+        public SeriesOccurrenceModel Series { get; set; }
         public List<string> Speakers { get; set; }
         public string Title { get; set; }
     }
 
     internal class SeriesModel
     {
-        public SeriesModel(string name, string id, int totalParts)
+        public SeriesModel(
+            string id,
+            string name,
+            int totalParts,
+            DateTime firstOccurrence,
+            DateTime lastOccurrence)
         {
-            Name = name;
             Id = id;
+            Name = name;
             TotalParts = totalParts;
+            FirstOccurrence = firstOccurrence;
+            LastOccurrence = lastOccurrence;
         }
 
-        public string Name { get; set; }
         public string Id { get; set; }
+        public string Name { get; set; }
         public int TotalParts { get; set; }
+        public DateTime FirstOccurrence { get; set; }
+        public DateTime LastOccurrence { get; set; }
     }
 
     internal class SeriesOccurrenceModel
     {
-        public SeriesOccurrenceModel(string? name, string id, int occurrencePart, int totalParts)
+        public SeriesOccurrenceModel(string id, int part)
         {
-            Name = name;
             Id = id;
-            OccurrencePart = occurrencePart;
-            TotalParts = totalParts;
+            Part = part;
         }
-
-        public string? Name { get; set; }
+        
         public string Id { get; set; }
-        public int OccurrencePart { get; set; }
-        public int TotalParts { get; set; }
+        public int Part { get; set; }
     }
 
     internal class SpeakerModel
